@@ -4,15 +4,20 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 
+
 const { PORT, CLIENT_ORIGIN } = require('./config');
 const { dbConnect } = require('./db-mongoose');
-// const {dbConnect} = require('./db-knex');
+
+const eventsRouter = require('./routes/events');
+const usersRouter = require('./routes/users');
 
 const app = express();
 
+app.use(express.json());
+
 app.use(
   morgan(process.env.NODE_ENV === 'production' ? 'common' : 'dev', {
-    skip: (req, res) => process.env.NODE_ENV === 'test'
+    skip: (req) => process.env.NODE_ENV === 'test'
   })
 );
 
@@ -21,6 +26,12 @@ app.use(
     origin: CLIENT_ORIGIN
   })
 );
+
+
+
+app.use('/api/events', eventsRouter);
+app.use('/api/users', usersRouter);
+
 
 function runServer(port = PORT) {
   const server = app
