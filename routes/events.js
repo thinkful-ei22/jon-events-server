@@ -18,6 +18,7 @@ router.get('/', (req, res, next) => {
 
   EventModel.find(filter)
     .sort({updatedAt: 'desc'})
+    .limit(10)
     .then(results => {
       res.json(results);
     })
